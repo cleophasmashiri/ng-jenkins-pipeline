@@ -20,7 +20,7 @@ node {
 		testContainer.inside {
 			sh 'apt-get update && apt-get install -y wget gnupg'
 			sh 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -'
-			sh 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+			// sh 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 			sh 'apt-get update && apt-get install -y google-chrome-stable'
 			sh 'npm install --only-dev'
 			sh 'npm test'
