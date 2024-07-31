@@ -1,0 +1,39 @@
+node {
+	agent {
+        docker {
+            image 'node:20.11' // Replace with your Docker image
+            args '-u root' // Optional: run as root if necessary
+        }
+    }
+	environment {
+		CHROME_BIN = '/usr/bin/google-chrome-stable'
+    }
+	def commit_id
+  	stage('Preparation') {
+		checkout scm
+		sh "git rev-parse --short HEAD > .git/commit-id"
+		commit_id = readFile('.git/commit-id').trim()			
+  	}
+	stage('Test') {
+		def testContainer = docker.image('node:20.11')
+		testContainer.pull();
+		testContainer.inside {
+			sh 'apt-get update && apt-get install -y wget gnupg'
+			sh 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -'
+			sh 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+			sh 'apt-get update && apt-get install -y google-chrome-stable'
+			sh 'npm install --only-dev'
+			sh 'npm test'
+		}
+
+		// nodejs(nodeJSInstallationName: 'nodejs') {
+		// 	sh 'npm install --only-dev'
+		// 	sh 'npm test'
+		// }
+	}
+	stage('Docker build/push') {
+		docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+			def app = docker.build("cleophasmashiri/ng-jenkins-pipeline:${commit_id}", ".").push()
+		}
+	}
+}
