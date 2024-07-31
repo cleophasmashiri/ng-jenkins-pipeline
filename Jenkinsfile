@@ -1,6 +1,12 @@
 node {
-  environment {
-        CHROME_BIN = '/usr/bin/google-chrome-stable'
+	agent {
+        docker {
+            image 'node:20.11' // Replace with your Docker image
+            args '-u root' // Optional: run as root if necessary
+        }
+    }
+	environment {
+		CHROME_BIN = '/usr/bin/google-chrome-stable'
     }
 	def commit_id
   	stage('Preparation') {
