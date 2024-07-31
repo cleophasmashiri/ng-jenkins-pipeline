@@ -1,4 +1,7 @@
 node {
+  environment {
+        CHROME_BIN = '/usr/bin/google-chrome-stable'
+    }
 	def commit_id
   	stage('Preparation') {
 		checkout scm
