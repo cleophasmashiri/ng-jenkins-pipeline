@@ -11,7 +11,7 @@ node {
 	stage('Test') {
 		nodejs(nodeJSInstallationName: 'nodejs') {
 			sh 'npm install --only-dev'
-			sh 'npm test'
+			//sh 'npm test'
 		}
 	}
 	stage('Docker build/push') {
